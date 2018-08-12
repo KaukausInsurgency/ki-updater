@@ -22,7 +22,21 @@ namespace KIUpdater
         {
             var client = new RestSharp.RestClient(uri);
             var request = new RestSharp.RestRequest("api/version");
-            return client.Execute<VersionResponse>(request).Data;
+            var response = client.Execute<VersionResponse>(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                if (response.StatusCode == 0)
+                    Console.WriteLine("Error communicating with server - unable to connect to server");
+                else
+                    Console.WriteLine("Error communicating with server (status code: " + response.StatusCode + ")");
+                
+                return null;
+            }
+            else
+            {
+                return client.Execute<VersionResponse>(request).Data;
+            }
+            
         }
     }
 

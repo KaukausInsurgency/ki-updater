@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backup.cs" />
     <Compile Include="ConfigPatcher.cs" />
     <Compile Include="DMP.cs" />
     <Compile Include="Downloader.cs" />

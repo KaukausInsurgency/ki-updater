@@ -36,15 +36,25 @@ namespace KIUpdater
 
             string HooksPath = savedGamesPath + "\\Hooks";
 
-            if (!Directory.Exists(HooksPath))
-                Directory.CreateDirectory(HooksPath);
+            if (!TryCreateDirectory(HooksPath))
+            {
+                return false;
+            }
+                
 
             {
                 string KIServerModNewPath = extractPath + "\\ki\\DCSMod\\Hooks\\KI_ServerGameGUI.lua";
                 string DestPath = HooksPath + "\\KI_ServerGameGUI.lua";
 
-                File.Copy(KIServerModNewPath, DestPath, true);
-                Console.WriteLine("Updated: " + DestPath);
+                if (!TryCopyFile(KIServerModNewPath, DestPath))
+                {
+                    Console.WriteLine("Could not update KI_ServerGameGUI.lua because of an error");
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("Updated: " + DestPath);
+                }             
             }
 
             {
@@ -52,11 +62,27 @@ namespace KIUpdater
                 string missionScriptingPath = extractPath + "\\ki\\DCSCore\\MissionScripting.lua";
                 string DestPath = installPath + "\\Scripts\\MissionScripting.lua";
 
-                File.Copy(missionScriptingPath, DestPath, true);
-                Console.WriteLine("Updated: " + DestPath);
+                if (!TryCopyFile(missionScriptingPath, DestPath))
+                {
+                    Console.WriteLine("Could not update KI_ServerGameGUI.lua because of an error");
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("Updated: " + DestPath);
+                }
             }
 
-            CopyFolder(extractPath + "\\ki", ".");
+            try
+            {
+                CopyFolder(extractPath + "\\ki", ".");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error applying updates - " + ex.Message);
+                return false;
+            }
+            
 
             return true;
         }
@@ -93,6 +119,39 @@ namespace KIUpdater
                 string name = Path.GetFileName(folder);
                 string dest = Path.Combine(destFolder, name);
                 CopyFolder(folder, dest);
+            }
+        }
+
+        private bool TryCreateDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error creating directory - " + ex.Message);
+                    return false;
+                }
+            }
+            else
+                return true;          
+        }
+
+        private bool TryCopyFile(string source, string dest)
+        {
+            try
+            {
+                File.Copy(source, dest, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error copying file - " + ex.Message);
+                return false;
             }
         }
     }
