@@ -74,13 +74,15 @@ namespace KIUpdater
                     {
                         destPath = fileName;
                     }
-                   
-                    if (topFolder.ToLower() != "config")
+               
+                    if (topFolder.ToLower() == "config" && File.Exists(destPath))
                     {
-                        File.Copy(p, destPath, true);
-                        Console.WriteLine("Updated: " + destPath);
+                        ConfigPatcher patcher = new ConfigPatcher();
+                        string patchedConfig = patcher.Patch(destPath, p);
+                        File.WriteAllText(destPath, patchedConfig);
+                        Console.WriteLine("Patched: " + destPath);
                     }
-                    else if (topFolder.ToLower() == "config" && !File.Exists(destPath))
+                    else
                     {
                         File.Copy(p, destPath, true);
                         Console.WriteLine("Updated: " + destPath);

@@ -5,3 +5,8 @@
 *.pdb
 KIUpdater/bin/
 KIUpdater/obj/
+*.lock
+*.ide
+*.ide-shm
+*.ide-wal
+.vs/KIUpdater/v15/.suo
