@@ -56,42 +56,44 @@ namespace KIUpdater
                 Console.WriteLine("Updated: " + DestPath);
             }
 
-            {
-                foreach (string p in Directory.GetFiles(extractPath + "\\ki\\DCSScripts", "*.lua", SearchOption.AllDirectories))
-                {
-                    string fileName = Path.GetFileName(p);
-                    string topFolder = Path.GetFileName(Path.GetDirectoryName(p));
-                    string destPath = "";
-
-                    if (topFolder.ToLower() != "dcsscripts")
-                    {
-                        if (!Directory.Exists(topFolder))
-                            Directory.CreateDirectory(topFolder);
-
-                        destPath = topFolder + "\\" + fileName;
-                    }
-                    else
-                    {
-                        destPath = fileName;
-                    }
-               
-                    if (topFolder.ToLower() == "config" && File.Exists(destPath))
-                    {
-                        ConfigPatcher patcher = new ConfigPatcher();
-                        string patchedConfig = patcher.Patch(destPath, p);
-                        File.WriteAllText(destPath, patchedConfig);
-                        Console.WriteLine("Patched: " + destPath);
-                    }
-                    else
-                    {
-                        File.Copy(p, destPath, true);
-                        Console.WriteLine("Updated: " + destPath);
-                    }
-
-                }
-            }
+            CopyFolder(extractPath + "\\ki", ".");
 
             return true;
+        }
+
+        private void CopyFolder(string sourceFolder, string destFolder)
+        {  
+            if (!Directory.Exists(destFolder))
+                Directory.CreateDirectory(destFolder);
+
+            string topFolder = Path.GetFileName(destFolder);
+
+            string[] files = Directory.GetFiles(sourceFolder);
+            foreach (string file in files)
+            {
+                string name = Path.GetFileName(file);
+                string dest = Path.Combine(destFolder, name);
+                if (topFolder.ToLower() == "config" && File.Exists(dest))
+                {
+                    ConfigPatcher patcher = new ConfigPatcher();
+                    string patchedConfig = patcher.Patch(dest, file);
+                    File.WriteAllText(dest, patchedConfig);
+                    Console.WriteLine("Patched: " + dest);
+                }
+                else
+                {
+                    File.Copy(file, dest, true);
+                    Console.WriteLine("Updated: " + dest);
+                }
+                
+            }
+            string[] folders = Directory.GetDirectories(sourceFolder);
+            foreach (string folder in folders)
+            {
+                string name = Path.GetFileName(folder);
+                string dest = Path.Combine(destFolder, name);
+                CopyFolder(folder, dest);
+            }
         }
     }
 }

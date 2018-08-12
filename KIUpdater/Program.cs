@@ -17,7 +17,7 @@ namespace KIUpdater
         private static string KI_DL_PATH = "ki.zip";
         private static string VERSION_FILE = "Version.txt";
         private static string DCS_SAVED_GAMES_PATH = "\\Saved Games\\DCS\\Scripts";
-        private static string HTTP_DOWNLOAD_URL = "http://kaukasusinsurgency.com/downloads/ki.zip";
+        private static string HTTP_GET_URL = "http://localhost:50475";
 
         static void Main(string[] args)
         {
@@ -26,12 +26,25 @@ namespace KIUpdater
             bool versionInfoExists = false;
             bool versionIsLatest = false;
 
+            Console.WriteLine("Communicating with server...");
+            // do http get call here
+            VersionRequest request = new VersionRequest(HTTP_GET_URL);
+
             if (File.Exists(VERSION_FILE))
             {
                 versionGUID = File.ReadAllText(VERSION_FILE);
                 versionInfoExists = true;
                 Console.WriteLine("Checking version...");
-                // do http get call here
+                if (versionGUID == request.Response.GUID)
+                {
+                    versionIsLatest = true;
+                    Console.WriteLine("You are on the latest version! Exiting updater.");
+                }
+                else
+                {
+                    Console.WriteLine("New version " + request.Response.Version + " available");
+                }
+                    
             }
             else
             {
@@ -46,7 +59,11 @@ namespace KIUpdater
                                                        new SavedGamesLocationFinder(DCS_SAVED_GAMES_PATH),
                                                        KI_DL_PATH);
 
-                downloader.Download(HTTP_DOWNLOAD_URL);
+                downloader.Download(request.Response.DownloadURL);
+
+                File.WriteAllText(VERSION_FILE, request.Response.GUID);
+
+                Console.WriteLine("Successfully updated to version " + request.Response.Version);
             }
 
             CleanUpTempFiles();
