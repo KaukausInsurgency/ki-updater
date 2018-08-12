@@ -1,0 +1,7 @@
+
+*.cache
+*.txt
+*.exe
+*.pdb
+KIUpdater/bin/
+KIUpdater/obj/
