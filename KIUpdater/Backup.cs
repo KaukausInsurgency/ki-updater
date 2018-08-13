@@ -13,7 +13,6 @@ namespace KIUpdater
         private SavedGamesLocationFinder savedGamesFinder;
         private string backupPath;
         private List<string> excludeFiles;
-        private bool done;
         private string installPath;
         private string savedGamesPath;
 
@@ -21,7 +20,6 @@ namespace KIUpdater
         {
             this.installFinder = installFinder;
             this.savedGamesFinder = savedGamesFinder;
-            this.done = false;
             this.backupPath = backupPath;
             excludeFiles = new List<string>
             {
