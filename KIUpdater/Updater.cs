@@ -34,13 +34,32 @@ namespace KIUpdater
 
             Console.WriteLine("Updating Files");
 
-            string HooksPath = savedGamesPath + "\\Hooks";
+            string ScriptsPath = savedGamesPath + "\\Scripts";
+            if (!TryCreateDirectory(ScriptsPath))
+            {
+                return false;
+            }
+
+            string HooksPath = savedGamesPath + "\\Scripts\\Hooks";
 
             if (!TryCreateDirectory(HooksPath))
             {
                 return false;
             }
-                
+
+            string MissionsPath = savedGamesPath + "\\Missions\\Kaukasus Insurgency";
+
+            if (!TryCreateDirectory(MissionsPath))
+            {
+                return false;
+            }
+
+            if (!TryCreateDirectory(MissionsPath + "\\Server") ||
+                !TryCreateDirectory(MissionsPath + "\\GameEvents") ||
+                !TryCreateDirectory(MissionsPath + "\\SlingloadEvents"))
+            {
+                return false;
+            }
 
             {
                 string KIServerModNewPath = extractPath + "\\ki\\DCSMod\\Hooks\\KI_ServerGameGUI.lua";
@@ -55,6 +74,21 @@ namespace KIUpdater
                 {
                     Console.WriteLine("Updated: " + DestPath);
                 }             
+            }
+
+            {
+                string JsonModPath = extractPath + "\\ki\\DCSMod\\JSON.lua";
+                string DestPath = savedGamesPath + "\\JSON.lua";
+
+                if (!TryCopyFile(JsonModPath, DestPath))
+                {
+                    Console.WriteLine("Could not update JSON.lua because of an error");
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("Updated: " + DestPath);
+                }
             }
 
             {
@@ -82,7 +116,11 @@ namespace KIUpdater
                 Console.WriteLine("Error applying updates - " + ex.Message);
                 return false;
             }
-            
+
+            DCSMissionReader rdr = new DCSMissionReader();
+            rdr.UpdateScriptLoadPath(extractPath + "\\ki\\DCSMissions\\KIAlpha.miz", Path.GetFullPath(".\\DCSScripts"));
+
+
 
             return true;
         }

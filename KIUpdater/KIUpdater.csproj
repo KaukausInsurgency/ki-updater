@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -52,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Backup.cs" />
     <Compile Include="ConfigPatcher.cs" />
+    <Compile Include="DCSMissionReader.cs" />
     <Compile Include="DMP.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Extractor.cs" />

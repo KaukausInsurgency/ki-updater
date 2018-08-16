@@ -17,7 +17,7 @@ namespace KIUpdater
         private static string KI_DL_PATH = "ki.zip";
         private static string KI_BACKUP_PATH = "ki-backup";
         private static string VERSION_FILE = "Version.txt";
-        private static string DCS_SAVED_GAMES_PATH = "\\Saved Games\\DCS\\Scripts";
+        private static string DCS_SAVED_GAMES_PATH = "\\Saved Games\\DCS";
         private static string HTTP_GET_URL = "http://localhost:50475";
 
         static void Main(string[] args)
